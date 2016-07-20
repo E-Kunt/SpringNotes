@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd"
+        default-autowire="byName">
+        
+    <bean id="dao"  class="com.ekunt.dao.impl.UserDaoImpl" >
+    	<property name="daoId"  value="1"/>
+    </bean>
+    
+    <bean id="userDao"  class="com.ekunt.dao.impl.UserDaoImpl" >
+    	<property name="daoId"  value="2"/>
+    </bean>
+
+	<!-- <beans>的default-autowire，设置默认自动装载属性。对包含的所有bean起作用。 -->
+	<!-- <bean>的autowire，设置该bean自动装配属性，不用手动写property -->
+    <bean id="userService"  class="com.ekunt.service.UserService"  autowire="default" />
+
+</beans>

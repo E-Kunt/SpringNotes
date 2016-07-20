@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- name 和 id 都可以，一般用id, 区别在于name可以包含特殊字符。（不重要） -->
+    <bean name="userDao"  class="com.ekunt.dao.impl.UserDaoImpl" >
+    	<!-- 简单类型属性的注入 -->
+    	<property name="testProperty"  value="Just for test!" />
+    </bean>
+
+    <bean id="userService"  class="com.ekunt.service.UserService" >
+    
+    	<!-- set属性注入 -->
+        <property name="dao"  ref="userDao"  />
+        
+        <!-- 构造器注入 （多个参数时，可以用index或者type指定）-->
+        <!-- <constructor-arg ref="userDao"  /> -->
+        
+    </bean>
+
+</beans>

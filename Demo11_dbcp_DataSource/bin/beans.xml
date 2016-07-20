@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!-- 使用注解-->
+    <context:annotation-config/>
+    <!-- 使用@component注解 -->
+    <context:component-scan base-package="com.ekunt"/>
+    
+    <!-- 使用AOP XML配置 -->
+<!--     <bean id="logInterceptor" class="com.ekunt.interceptor.LogInterceptor"/>
+    <aop:config>
+    	<aop:pointcut id="service" expression="execution(public * com.ekunt.service..*.*(..))" /> 放这里，对所有aspect都可用。
+    	<aop:aspect id="logAspect" ref="logInterceptor">
+    		<aop:pointcut id="service" expression="execution(public * com.ekunt.service..*.*(..))" /> 放这里，只当前aspect可用。
+    		<aop:before method="before" pointcut-ref="service"/>
+    		<aop:after method="after" pointcut="execution(public * com.ekunt.service..*.*(..))"/>
+    		<aop:around method="around" pointcut-ref="service"/>
+    		<aop:after-returning method="afterReturning" pointcut-ref="service"/>
+    		<aop:after-throwing method="afterThrowing" pointcut-ref="service"/>
+    	</aop:aspect>
+    </aop:config> -->
+
+	<!-- 整合数据源 dbcp 数据库连接池 方式1 -->
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/spring" />
+		<property name="username" value="root" />
+		<property name="password" value="tiger" />
+	</bean> -->
+	
+	<!-- 整合数据源 dbcp 数据库连接池 方式2-->
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations" value="classpath:jdbc.properties"/>
+	</bean>
+	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp2.BasicDataSource">
+    	<property name="driverClassName" value="${jdbc.driverClassName}"/>
+    	<property name="url" value="${jdbc.url}"/>
+   	 	<property name="username" value="${jdbc.username}"/>
+   	 	<property name="password" value="${jdbc.password}"/>
+	</bean>
+
+</beans>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="userDao"  class="com.ekunt.dao.impl.UserDaoImpl" />
+
+    <bean id="userService"  class="com.ekunt.service.UserService" >
+        <property name="dao"  ref="userDao"  />
+        
+        <property name="properties">
+        	<props>
+        		<prop key="a">A</prop>
+        		<prop key="b">B</prop>
+        	</props>
+        </property>
+        
+        <property name="sets">
+        	<set>
+        		<value>A</value>
+        		<value>B</value>
+        	</set>
+        </property>
+        
+        <property name="lists">
+        	<list>
+        		<value>A</value>
+        		<value>B</value>
+        	</list>
+        </property>
+        
+        <property name="maps">
+        	<map>
+        		<entry key="A"  value-ref="userDao"/>
+        	</map>
+        </property>
+        
+    </bean>
+
+</beans>

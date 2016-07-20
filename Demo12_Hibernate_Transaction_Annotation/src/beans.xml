@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+    <!-- 使用注解-->
+    <context:annotation-config/>
+    <!-- 使用@component注解 -->
+    <context:component-scan base-package="com.ekunt"/>
+    
+    <!-- 使用AOP XML配置 -->
+<!--     <bean id="logInterceptor" class="com.ekunt.interceptor.LogInterceptor"/>
+    <aop:config>
+    	<aop:pointcut id="service" expression="execution(public * com.ekunt.service..*.*(..))" /> 放这里，对所有aspect都可用。
+    	<aop:aspect id="logAspect" ref="logInterceptor">
+    		<aop:pointcut id="service" expression="execution(public * com.ekunt.service..*.*(..))" /> 放这里，只当前aspect可用。
+    		<aop:before method="before" pointcut-ref="service"/>
+    		<aop:after method="after" pointcut="execution(public * com.ekunt.service..*.*(..))"/>
+    		<aop:around method="around" pointcut-ref="service"/>
+    		<aop:after-returning method="afterReturning" pointcut-ref="service"/>
+    		<aop:after-throwing method="afterThrowing" pointcut-ref="service"/>
+    	</aop:aspect>
+    </aop:config> -->
+    
+    	<!-- 整合数据源 dbcp 数据库连接池 方式2-->
+<!-- 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    	<property name="locations" value="classpath:jdbc.properties"/>
+	</bean>
+	<bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp2.BasicDataSource">
+    	<property name="driverClassName" value="${jdbc.driverClassName}"/>
+    	<property name="url" value="${jdbc.url}"/>
+   	 	<property name="username" value="${jdbc.username}"/>
+   	 	<property name="password" value="${jdbc.password}"/>
+	</bean> -->
+
+	<!-- 整合数据源 dbcp 数据库连接池 方式1 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/spring?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true" />
+		<property name="username" value="root" />
+		<property name="password" value="tiger" />
+	</bean>
+	
+	<!-- 声明SessionFactory, 整合Hibernate -->
+	 <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+	 	<!-- 注入数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 注入实体类的对象关系映射(两种方式)：Hibernate使用注解时的配置。 使用XML时，注入mappingResources-->
+        <!-- <property name="AnnotatedClasses"> 
+            <list>
+                <value>com.ekunt.entity.User</value>
+                <value>com.ekunt.entity.Log</value>
+            </list>
+        </property> -->
+        <property name="packagesToScan"> 
+            <list>
+                <value>com.ekunt.entity</value>
+            </list>
+        </property>
+        <!-- 注入Hibernate的其他配置 -->
+        <property name="hibernateProperties">
+            <props>
+            	<prop key="hibernate.dialect" >org.hibernate.dialect.MySQLDialect</prop>
+            	<prop key="hibernate.show_sql" >true</prop>
+            	<prop key="hibernate.format_sql">true</prop>
+            	<prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- 声明transactionManager这个Bean -->
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <!-- 必须注入sessionFactory -->
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    <!-- 配置使用注解的事务管理，必须配置transaction-manager。这样就能使用@Transactional注解了。-->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>
